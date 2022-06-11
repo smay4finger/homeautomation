@@ -1,0 +1,61 @@
+version: '3.6'
+services:
+
+  mosquitto:
+    image: eclipse-mosquitto
+    container_name: mosquitto
+    ports:
+      - "1883:1883"
+      - "9001:9001"
+    volumes:
+      - ./data/mosquitto/config:/mosquitto/config
+      - ./data/mosquitto/data:/mosquitto/data
+
+  zigbee2mqtt:
+    container_name: zigbee2mqtt
+    image: koenkk/zigbee2mqtt
+    restart: unless-stopped
+    depends_on:
+      - "mosquitto"
+    volumes:
+      - ./data/zigbee2mqtt:/app/data
+    ports:
+      # Frontend port
+      - "8080:8080"
+    environment:
+      - TZ=Europe/Berlin
+    devices:
+      # Make sure this matched your adapter location
+      - /dev/serial/by-id/usb-Silicon_Labs_slae.sh_cc2652rb_stick_-_slaesh_s_iot_stuff_00_12_4B_00_23_93_2B_F4-if00-port0
+
+  influxdb:
+    container_name: influxdb
+    image: influxdb:latest
+    ports:
+      - '8086:8086'
+    volumes:
+      - ./data/influxdb/config:/etc/influxdb2
+      - ./data/influxdb/data:/var/lib/influxdb2
+    environment:
+      - INFLUXDB_DB=db0
+      - INFLUXDB_ADMIN_USER=${INFLUXDB_USERNAME}
+      - INFLUXDB_ADMIN_PASSWORD=${INFLUXDB_PASSWORD}
+
+
+  nodered:
+    container_name: nodered
+    build: services/nodered
+    restart: unless-stopped
+    depends_on:
+      - mosquitto
+      - influxdb
+    user: "0"
+    environment:
+      - TZ=Europe/Berlin
+    ports:
+      - "1880:1880"
+    volumes:
+      - ./data/nodered:/data
+    devices:
+      # USB to RS485
+      - /dev/serial/by-id/usb-FTDI_FT232R_USB_UART_A10KVA5Y-if00-port0:/dev/ttyUSB0
