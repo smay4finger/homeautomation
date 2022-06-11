@@ -10,6 +10,7 @@ services:
     volumes:
       - ${PERSISTENT_VOLUMES}/mosquitto/config:/mosquitto/config
       - ${PERSISTENT_VOLUMES}/mosquitto/data:/mosquitto/data
+      - ${PERSISTENT_VOLUMES}/mosquitto/log:/mosquitto/log
 
   zigbee2mqtt:
     container_name: zigbee2mqtt
