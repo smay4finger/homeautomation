@@ -2,6 +2,7 @@ version: '3.7'
 services:
 
   mosquitto:
+    container_name: mosquitto
     image: eclipse-mosquitto
     ports:
       - "1883:1883"
@@ -11,6 +12,7 @@ services:
       - ${PERSISTENT_VOLUMES}/mosquitto/data:/mosquitto/data
 
   zigbee2mqtt:
+    container_name: zigbee2mqtt
     image: koenkk/zigbee2mqtt
     restart: unless-stopped
     depends_on:
@@ -27,6 +29,7 @@ services:
       - ${ZIGBEE_DEVICE}
 
   influxdb:
+    container_name: influxdb
     image: influxdb:latest
     ports:
       - '8086:8086'
@@ -40,6 +43,7 @@ services:
 
 
   nodered:
+    container_name: nodered
     build: services/nodered
     restart: unless-stopped
     depends_on:
