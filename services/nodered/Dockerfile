@@ -4,6 +4,7 @@ RUN apk update && apk add --no-cache eudev-dev
 USER node-red
 
 
+RUN cd /usr/src/node-red && npm install --save  node-red-node-serialport 
 RUN cd /usr/src/node-red && npm install --save  node-red-configurable-ping
 RUN cd /usr/src/node-red && npm install --save  node-red-contrib-boolean-logic
 RUN cd /usr/src/node-red && npm install --save  node-red-contrib-bigtimer
