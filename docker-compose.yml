@@ -62,3 +62,4 @@ services:
     devices:
       # USB to RS485
       - ${MODBUS_DEVICE}:/dev/ttyUSB0
+      - ${WATER_DEVICE}:/dev/ttyUSB1
